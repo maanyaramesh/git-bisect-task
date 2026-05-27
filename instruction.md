@@ -1,24 +1,27 @@
-A regression was introduced somewhere in the repository history.
+A regression exists in the git history of /app/repo.
 
-The repository contains a small parser pipeline whose output changes unexpectedly for certain multi-line inputs.
+You must identify the FIRST bad commit using git bisect.
 
-Your task is to identify the first bad commit that introduced the behavioral change.
+The bug is in parser.py.
 
-Write the identified commit hash to /app/output.txt using the format:
+Expected correct behavior:
+Input text should have leading and trailing whitespace removed before converting to uppercase.
 
-first_bad_commit=<hash>
+Broken behavior:
+Whitespace is preserved.
 
-The hash must correspond to an actual commit inside the repository history.A behavior change was introduced somewhere in the repository history.
+After identifying the first bad commit, create /app/output.txt.
 
-The current version produces incorrect output for one production scenario, while older revisions behave correctly.
+The file must contain EXACTLY these two lines:
 
-Investigate the repository history and determine which revision introduced the behavior change.
+revision: <commit hash>
+summary: <commit message>
 
-When you finish, write your findings to:
+Example:
 
-/app/output.txt
+revision: abc1234
+summary: temporary compatibility adjustment
 
-Format:
-
-revision=<commit_hash>
-summary=<short explanation>
+You must output:
+- revision (the git commit hash)
+- summary (the exact git commit message)
