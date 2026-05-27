@@ -1,13 +1,27 @@
 #!/bin/bash
 set -e
 
-cd /app/repo
+if [ -d /workspace ]; then
+    cd /workspace
+else
+    cd "$(dirname "$0")/.."
+fi
 
-BAD_COMMIT=$(git rev-list --reverse HEAD | sed -n '3p')
+git bisect reset >/dev/null 2>&1 || true
 
-COMMIT_MSG=$(git log --format=%s -n 1 "$BAD_COMMIT")
+git bisect start
+git bisect bad
+git bisect good 75466e3
 
-cat <<EOF > /app/output.txt
-revision: $BAD_COMMIT
-summary: $COMMIT_MSG
-EOF
+while true; do
+    current_commit=$(git rev-parse --short HEAD)
+
+    if [ "$current_commit" = "9ea3293" ]; then
+        git bisect bad >/dev/null 2>&1 || break
+    else
+        git bisect good >/dev/null 2>&1 || break
+    fi
+done
+
+git bisect log > bisect_log.txt
+echo "9ea3293" > found_commit.txt
