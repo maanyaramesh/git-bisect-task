@@ -1,2 +1,0 @@
-revision: 9ea3293
-summary: implement actual git bisect solution

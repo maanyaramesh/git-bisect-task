@@ -1,17 +1,36 @@
-A regression was introduced somewhere in this repository's git history.
+# Git Bisect Task
 
-Use git bisect to identify the first bad commit.
+A git repository is located at:
 
-Starting from the current HEAD:
-1. Use git bisect to locate the first commit that introduced the regression.
-2. Write your result to `/app/output.txt`
+/workspace/repo
 
-The file must contain EXACTLY:
+The script:
 
-revision: <7-character commit hash>
-summary: <commit subject line>
+./check.sh
 
-Example format:
+returns:
+- exit code 0 for good commits
+- non-zero exit code for bad commits
+
+One commit introduced a regression.
+
+Your task is to use `git bisect` to identify the FIRST bad commit.
+
+After identifying the commit, create a file EXACTLY at:
+
+/workspace/output.txt
+
+The file must contain EXACTLY TWO lines in this format:
+
+revision: <commit hash>
+summary: <commit message>
+
+Example:
 
 revision: abc1234
-summary: fix parser edge case
+summary: introduce failing behavior
+
+Requirements:
+- You must determine the answer dynamically using git history
+- Do not hardcode the commit hash
+- The commit hash may be abbreviated or full-length

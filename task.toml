@@ -1,25 +1,7 @@
-schema_version = "1.1"
-
-[task]
-name = "maanyaramesh/git-bisect-task"
-description = "Isolate a data-dependent mutation bug inside a git commit history using a checksum pipeline check"
-authors = [{ name = "maanyaramesh" }]
-keywords = ["git", "bisect", "debugging", "python", "checksum", "pipeline"]
-
-[metadata]
-difficulty = "hard"
-category = "debugging"
-difficulty_explanation = "Requires constructing an automated git-bisect validation hook that reads non-constant state fields and performs byte-exact SHA256 verification against dynamic files."
-
-[verifier]
-timeout_sec = 300.0
+instruction = "/workspace/instruction.md"
 
 [agent]
-timeout_sec = 1100.0
+timeout_sec = 300
 
-[environment]
-build_timeout_sec = 900.0
-cpus = 2
-memory_mb = 4096
-storage_mb = 2048
-gpus = 0
+[test]
+command = "bash /tests/test.sh"
