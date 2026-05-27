@@ -3,8 +3,8 @@ import re
 
 OUTPUT_PATH = "/app/output.txt"
 
-EXPECTED_REVISION = "4efda3f"
-EXPECTED_SUMMARY = "temporary compatibility adjustment"
+EXPECTED_REVISION = "9ea3293"
+EXPECTED_SUMMARY = "implement actual git bisect solution"
 
 
 def parse():
