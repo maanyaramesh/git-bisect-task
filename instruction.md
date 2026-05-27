@@ -1,27 +1,17 @@
-A regression exists in the git history of /app/repo.
+A regression was introduced somewhere in this repository's git history.
 
-You must identify the FIRST bad commit using git bisect.
+Use git bisect to identify the first bad commit.
 
-The bug is in parser.py.
+Starting from the current HEAD:
+1. Use git bisect to locate the first commit that introduced the regression.
+2. Write your result to `/app/output.txt`
 
-Expected correct behavior:
-Input text should have leading and trailing whitespace removed before converting to uppercase.
+The file must contain EXACTLY:
 
-Broken behavior:
-Whitespace is preserved.
+revision: <7-character commit hash>
+summary: <commit subject line>
 
-After identifying the first bad commit, create /app/output.txt.
-
-The file must contain EXACTLY these two lines:
-
-revision: <commit hash>
-summary: <commit message>
-
-Example:
+Example format:
 
 revision: abc1234
-summary: temporary compatibility adjustment
-
-You must output:
-- revision (the git commit hash)
-- summary (the exact git commit message)
+summary: fix parser edge case
