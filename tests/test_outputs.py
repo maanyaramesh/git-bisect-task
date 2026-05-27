@@ -1,7 +1,7 @@
 import os
 import re
 
-OUTPUT_PATH = "/app/output.txt"
+OUTPUT_PATH = "output.txt"
 
 EXPECTED_REVISION = "9ea3293"
 EXPECTED_SUMMARY = "implement actual git bisect solution"
