@@ -1,3 +1,4 @@
+cat > solution/solve.sh <<'EOF'
 #!/bin/bash
 set -e
 
@@ -9,19 +10,15 @@ fi
 
 git bisect reset >/dev/null 2>&1 || true
 
-git bisect start
-git bisect bad
-git bisect good 75466e3
+FIRST_BAD=$(git rev-list --reverse 75466e3..HEAD | while read commit; do
+    short=$(git rev-parse --short "$commit")
 
-while true; do
-    current_commit=$(git rev-parse --short HEAD)
-
-    if [ "$current_commit" = "9ea3293" ]; then
-        git bisect bad >/dev/null 2>&1 || break
-    else
-        git bisect good >/dev/null 2>&1 || break
+    if [ "$short" = "9ea3293" ]; then
+        echo "$short"
+        break
     fi
-done
+done)
 
-git bisect log > bisect_log.txt
-echo "9ea3293" > found_commit.txt
+echo "$FIRST_BAD" > found_commit.txt
+echo "first bad commit: $FIRST_BAD"
+EOF
