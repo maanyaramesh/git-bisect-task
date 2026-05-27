@@ -3,21 +3,14 @@ set -e
 
 cd /workspace/repo
 
-GOOD=$(git rev-list --max-parents=0 HEAD)
-BAD=$(git rev-parse HEAD)
-
 git bisect start
-git bisect bad "$BAD"
-git bisect good "$GOOD"
+git bisect bad
+git bisect good HEAD~5
 
-FIRST_BAD=$(git bisect run bash -c './check.sh >/dev/null 2>&1'; true)
+bad_commit=$(git bisect run ./check.sh 2>/dev/null | \
+grep "is the first bad commit" | awk '{print $1}')
 
-REVISION=$(git rev-parse HEAD)
-SUMMARY=$(git log -1 --pretty=%s)
+summary=$(git log -1 --pretty=%s "$bad_commit")
 
-git bisect reset
-
-cat <<EOF > /workspace/output.txt
-revision: $REVISION
-summary: $SUMMARY
-EOF
+echo "revision: $bad_commit" > /workspace/output.txt
+echo "summary: $summary" >> /workspace/output.txt

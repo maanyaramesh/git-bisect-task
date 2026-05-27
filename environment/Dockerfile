@@ -28,3 +28,11 @@ RUN echo '#!/bin/bash\nexit 1' > check.sh && \
     chmod +x check.sh && \
     git add check.sh && \
     git commit -m "introduce failing behavior"
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get install -y git
+
+WORKDIR /workspace
+
+RUN mkdir -p /workspace/repo

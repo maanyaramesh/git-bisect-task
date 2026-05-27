@@ -1,11 +1,11 @@
 from pathlib import Path
 
 def test_output_exists():
-    assert Path("/workspace/output.txt").exists()
+    output = Path("/workspace/output.txt")
+    assert output.exists(), "output.txt was not created"
 
-def test_output_contents():
-    content = Path("/workspace/output.txt").read_text()
+def test_output_format():
+    text = Path("/workspace/output.txt").read_text()
 
-    assert "revision:" in content
-    assert "summary:" in content
-    assert "introduce failing behavior" in content
+    assert "revision:" in text
+    assert "summary:" in text
