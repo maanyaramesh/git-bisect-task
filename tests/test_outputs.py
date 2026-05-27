@@ -1,96 +1,37 @@
-import subprocess
 import os
 import re
+import subprocess
 
 OUTPUT_PATH = "/app/output.txt"
 REPO_PATH = "/app/repo"
 
+EXPECTED_SUMMARY = "temporary compatibility adjustment"
 
-def test_output_presence():
-    assert os.path.exists(OUTPUT_PATH), \
-        "Expected output artifact was not created."
+def test_target_artifact_presence():
+    assert os.path.exists(OUTPUT_PATH), "output.txt missing"
 
-
-def _parse_output():
+def _parse():
     with open(OUTPUT_PATH) as f:
-        content = f.read().strip()
+        text = f.read()
 
-    parsed = {}
+    revision = re.search(r"revision:\s*([a-f0-9]+)", text)
+    summary = re.search(r"summary:\s*(.+)", text)
 
-    for line in content.splitlines():
-        if "=" in line:
-            k, v = line.split("=", 1)
-            parsed[k.strip()] = v.strip()
+    assert revision, "missing revision"
+    assert summary, "missing summary"
 
-    return parsed
+    return revision.group(1), summary.group(1).strip()
 
-
-def test_output_schema():
-    parsed = _parse_output()
-
-    assert "revision" in parsed
-    assert "summary" in parsed
-
-
-def test_revision_format():
-    parsed = _parse_output()
-
-    revision = parsed["revision"]
-
-    assert re.fullmatch(r"[0-9a-f]{7,40}", revision)
-
-
-def test_revision_exists():
-    parsed = _parse_output()
-
-    revision = parsed["revision"]
+def test_revision_is_first_bad_commit():
+    revision, summary = _parse()
 
     result = subprocess.run(
-        ["git", "cat-file", "-e", revision],
+        ["git", "log", "--format=%s", "-n", "1", revision],
         cwd=REPO_PATH,
         capture_output=True,
+        text=True,
     )
 
     assert result.returncode == 0
-
-
-def test_behavior_transition():
-    parsed = _parse_output()
-
-    revision = parsed["revision"]
-
-    parent = subprocess.check_output(
-        ["git", "rev-parse", f"{revision}^"],
-        cwd=REPO_PATH,
-        text=True,
-    ).strip()
-
-    current = subprocess.run(
-        ["python", "parser.py"],
-        cwd=REPO_PATH,
-        capture_output=True,
-        text=True,
-    )
-
-    previous = subprocess.run(
-        ["git", "checkout", parent],
-        cwd=REPO_PATH,
-        capture_output=True,
-        text=True,
-    )
-
-    previous_run = subprocess.run(
-        ["python", "parser.py"],
-        cwd=REPO_PATH,
-        capture_output=True,
-        text=True,
-    )
-
-    subprocess.run(
-        ["git", "checkout", revision],
-        cwd=REPO_PATH,
-        capture_output=True,
-        text=True,
-    )
-
-    assert current.stdout != previous_run.stdout
+    assert result.stdout.strip() == EXPECTED_SUMMARY
+    assert summary == EXPECTED_SUMMARY
